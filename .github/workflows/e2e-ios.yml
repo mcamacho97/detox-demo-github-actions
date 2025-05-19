@@ -6,27 +6,22 @@ jobs:
   e2e-ios:
     runs-on: macos-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          cache: pnpm
-          node-version-file: .node-version
+          node-version: '22'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          cache: pnpm
-          node-version-file: .node-version
-
-      # Add this step to install pnpm
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Install pnpm dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Verify pnpm installation
+        run: pnpm --version
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Install macOS dependencies
         run: |
