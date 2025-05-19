@@ -63,7 +63,7 @@ jobs:
         run: pnpm detox test e2e/tests/Flujo\ de\ prueba\ concepto/workshopRobot.test.ts --configuration ios --cleanup --headless --record-logs all
 
       - name: Upload artifacts
-        if: failure()
+        if: failure() # Ensure this is correctly placed
         uses: actions/upload-artifact@v3
         with:
           name: detox-artifacts
