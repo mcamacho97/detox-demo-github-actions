@@ -12,11 +12,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          cache: yarn
+          cache: pnpm
           node-version-file: .node-version
 
-      - name: Install Yarn dependencies
-        run: yarn --frozen-lockfile --prefer-offline
+      - name: Install pnpm dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Install macOS dependencies
         run: |
@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-detox-build
 
       - name: Detox build
-        run: yarn detox build -c ios
+        run: pnpm detox build -c ios
 
       - name: Detox test
-        run: yarn test e2e/tests/Flujo\ de\ prueba\ concepto/workshopRobot.test.ts --configuration ios --cleanup --headless --record-logs all
+        run: pnpm detox test e2e/tests/Flujo\ de\ prueba\ concepto/workshopRobot.test.ts --configuration ios --cleanup --headless --record-logs all
