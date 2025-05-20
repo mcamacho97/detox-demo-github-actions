@@ -43,7 +43,7 @@
             "type": "ios.simulator",
             "device": {
                 "name": "iPhone 16",
-                "os": "iOS 17.5"
+                "os": "iOS 18.2"
             }
         },
         "attached": {
