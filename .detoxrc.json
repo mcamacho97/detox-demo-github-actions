@@ -22,12 +22,12 @@
         "ios.debug": {
             "type": "ios.app",
             "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/detoxdemogithubactions.app",
-            "build": "xcodebuild -project ios/detoxdemogithubactions.xcodeproj -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Debug -derivedDataPath ios/build"
+            "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
         },
         "ios.release": {
             "type": "ios.app",
             "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/detoxdemogithubactions.app",
-            "build": "xcodebuild -project ios/detoxdemogithubactions.xcodeproj -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
+            "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
         },
         "android.debug": {
             "type": "android.apk",
@@ -42,7 +42,7 @@
         "simulator": {
             "type": "ios.simulator",
             "device": {
-                "name": "iPhone 15",
+                "name": "iPhone 16",
                 "os": "iOS 17.5"
             }
         },
