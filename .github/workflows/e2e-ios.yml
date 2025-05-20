@@ -12,11 +12,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          cache: yarn
-          node-version-file: .node-version
+          node-version: '22'
 
-      - name: Install Yarn dependencies
-        run: yarn --frozen-lockfile --prefer-offline
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Verify pnpm installation
+        run: pnpm --version
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Install macOS dependencies
         run: |
