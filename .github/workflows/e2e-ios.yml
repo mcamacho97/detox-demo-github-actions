@@ -63,10 +63,3 @@ jobs:
 
       - name: Detox test
         run: pnpm detox test --configuration ios.release --cleanup --headless --record-logs all
-
-      - name: Upload artifacts
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: detox-artifacts
-          path: /e2e/artifacts
