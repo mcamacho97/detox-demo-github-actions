@@ -49,6 +49,7 @@ jobs:
       - name: Install CocoaPods
         run: |
           sudo gem install securerandom -v 0.3.2
+          sudo gem install drb -v 2.0.6
           sudo gem install cocoapods
           cd ios
           pod install
