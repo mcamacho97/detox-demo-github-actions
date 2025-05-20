@@ -27,7 +27,7 @@
         "ios.release": {
             "type": "ios.app",
             "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/detoxdemogithubactions.app",
-            "build": "ARCHS=arm64 xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
+            "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
         },
         "android.debug": {
             "type": "android.apk",
