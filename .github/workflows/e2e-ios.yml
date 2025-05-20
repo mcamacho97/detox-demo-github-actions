@@ -62,10 +62,10 @@ jobs:
             ${{ runner.os }}-detox-build
 
       - name: Detox build
-        run: pnpm detox build --configuration ios-debug
+        run: pnpm detox build --configuration ios.release
 
       - name: Detox test
-        run: pnpm detox test --configuration ios-debug --cleanup --headless --record-logs all
+        run: pnpm detox test --configuration ios.release --cleanup --headless --record-logs all
 
       # - name: Upload artifacts
       #   if: failure()
