@@ -42,7 +42,8 @@
         "simulator": {
             "type": "ios.simulator",
             "device": {
-                "type": "iPhone 16"
+                "name": "iPhone 15",
+                "os": "iOS 17.5"
             }
         },
         "attached": {
