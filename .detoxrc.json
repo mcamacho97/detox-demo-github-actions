@@ -22,7 +22,12 @@
         "ios.debug": {
             "type": "ios.app",
             "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/detoxdemogithubactions.app",
-            "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
+            "build": "xcodebuild -project ios/detoxdemogithubactions.xcodeproj -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Debug -derivedDataPath ios/build"
+        },
+        "ios.release": {
+            "type": "ios.app",
+            "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/detoxdemogithubactions.app",
+            "build": "xcodebuild -project ios/detoxdemogithubactions.xcodeproj -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
         },
         "android.debug": {
             "type": "android.apk",
@@ -34,27 +39,41 @@
         }
     },
     "devices": {
-        "ios": {
+        "simulator": {
             "type": "ios.simulator",
             "device": {
                 "type": "iPhone 16"
             }
         },
-        "android": {
-            "type": "android.simulator",
+        "attached": {
+            "type": "android.attached",
+            "device": {
+                "adbName": ".*"
+            }
+        },
+        "emulator": {
+            "type": "android.emulator",
             "device": {
                 "avdName": "Medium_Phone_API_35"
             }
         }
     },
     "configurations": {
-        "ios": {
-            "device": "ios",
+        "ios.debug": {
+            "device": "simulator",
             "app": "ios.debug"
         },
-        "android": {
+        "ios.release": {
+            "device": "simulator",
+            "app": "ios.release"
+        },
+        "android.debug": {
             "device": "android",
             "app": "android.debug"
+        },
+        "android.release": {
+            "device": "android",
+            "app": "android.release"
         }
     }
 }
