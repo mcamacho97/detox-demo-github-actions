@@ -37,25 +37,13 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Cache CocoaPods
-        id: cache-cocoapods
-        uses: actions/cache@v3
+      - name: setup-cocoapods
+        uses: maxim-lobanov/setup-cocoapods@v1
         with:
-          path: ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
-
-      - name: Install CocoaPods dependencies
-        run: |
-          sudo gem install securerandom -v 0.3.2
-          sudo gem install drb -v 2.0.6
-          sudo gem install activesupport -v 6.1.7.10
-          sudo gem install zeitwerk -v 2.6.18
+          version: 1.16.2
 
       - name: Install CocoaPods
         run: |
-          sudo gem install cocoapods
           cd ios
           pod install
           cd -
