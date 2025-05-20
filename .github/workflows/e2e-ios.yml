@@ -50,7 +50,7 @@ jobs:
         run: cd ios ; pod install ; cd -
 
       - name: Detox rebuild framework cache
-        run: yarn detox rebuild-framework-cache
+        run: pnpm detox rebuild-framework-cache
 
       - name: Cache Detox build
         id: cache-detox-build
@@ -62,10 +62,10 @@ jobs:
             ${{ runner.os }}-detox-build
 
       - name: Detox build
-        run: yarn detox build --configuration ios.release
+        run: pnpm detox build --configuration ios-debug
 
       - name: Detox test
-        run: yarn detox test --configuration ios.release --cleanup --headless --record-logs all
+        run: pnpm detox test --configuration ios-debug --cleanup --headless --record-logs all
 
       # - name: Upload artifacts
       #   if: failure()
