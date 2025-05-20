@@ -42,10 +42,3 @@ jobs:
     - name: Run Detox tests
       run: |
         npx detox test --record-videos all --take-screenshots all -c ios.release
-
-    - name: Upload Test Artifact - GitHub Action
-      if: always()
-      uses: actions/upload-artifact@v2
-      with: 
-        name: artifacts
-        path: artifacts
