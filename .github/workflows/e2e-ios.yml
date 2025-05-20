@@ -59,7 +59,10 @@ jobs:
           path: ios/build
           key: ${{ runner.os }}-detox-build
           restore-keys: |
-            ${{ runner.os }}-detox-build
+            ${{ runner.os }}-detox-build 
+
+      - name: Clean iOS Build
+        run: xcodebuild clean -project ios/detoxdemogithubactions.xcodeproj
 
       - name: Detox build
         run: pnpm detox build --configuration ios.release
