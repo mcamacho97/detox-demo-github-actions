@@ -41,4 +41,4 @@ jobs:
           bundler-cache: true
 
       - name: Check version cocoapods
-        run: pod -version
+        run: pod --version
