@@ -61,6 +61,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-detox-build 
 
+      - name: Detox clean cache
+        run: pnpm detox clean-framework-cache && detox build-framework-cache
+
       - name: Detox build
         run: pnpm detox build --configuration ios.release
         env:
