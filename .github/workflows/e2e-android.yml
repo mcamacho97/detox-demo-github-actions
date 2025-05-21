@@ -3,7 +3,7 @@ on: push
 
 jobs:
   e2e-android:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 50
 
     steps:
@@ -46,6 +46,7 @@ jobs:
           avd-name: Pixel_API_31
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
           disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect
           target: google_apis
 
       - name: Detox test - Resto de pruebas
@@ -56,6 +57,7 @@ jobs:
           avd-name: Pixel_API_31
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns="e2e/tests/Flujo de inicio de sesión" --reuse
           disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect 
           target: google_apis
 
       # - name: Generar reporte HTML final
