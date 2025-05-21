@@ -56,3 +56,6 @@ jobs:
         run: pnpm detox build --configuration ios.release
         env:
           RCT_NO_LAUNCH_PACKAGER: true
+
+      - name: Detox test
+        run: pnpm detox test --configuration ios.release --cleanup --headless --record-logs all
