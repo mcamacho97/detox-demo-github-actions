@@ -40,7 +40,7 @@ jobs:
           RCT_NO_LAUNCH_PACKAGER: true
 
       - name: Detox build
-        run: pnpm detox build --configuration ios.release
+        run: pnpm detox build --configuration android.release
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
