@@ -27,12 +27,6 @@ jobs:
           cache: gradle
           distribution: temurin
           java-version: 17
-          
-      - name: Download and Create Android Emulator Image
-        run: |
-          $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86"
-          $ANDROID_HOME/tools/bin/avdmanager create avd --force -n TestEmulator -d pixel --package 'system-images;android-29;google_apis;x86'
-          $ANDROID_HOME/emulator/emulator -list-avds
 
       - name: Detox clean cache
         run: pnpm detox clean-framework-cache && pnpm detox build-framework-cache
@@ -43,17 +37,13 @@ jobs:
         run: pnpm detox build --configuration android.release
         env:
           RCT_NO_LAUNCH_PACKAGER: true
-
-      - name: Get device name
-        id: device
-        run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
-
+          
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
           arch: x86_64
-          avd-name: ${{ steps.device.outputs.AVD_NAME }}
+          avd-name: Pixel_API_31
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
 
       - name: Detox test - Resto de pruebas
@@ -61,7 +51,7 @@ jobs:
         with:
           api-level: 31
           arch: x86_64
-          avd-name: ${{ steps.device.outputs.AVD_NAME }}
+          avd-name: Pixel_API_31
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
 
       # - name: Generar reporte HTML final
