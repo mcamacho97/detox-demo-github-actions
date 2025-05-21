@@ -13,9 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Check version xcode
-        run: xcodebuild -version
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
