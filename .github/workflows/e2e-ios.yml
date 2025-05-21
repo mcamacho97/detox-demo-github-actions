@@ -69,5 +69,8 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: Detox test
-        run: pnpm detox test --configuration ios.release --cleanup --headless --record-logs all
+      - name: Detox test - Inicio de sesión
+        run: pnpm detox test --configuration ios.release --headless --record-logs all --specs e2e/tests/Flujo\ de\ inicio\ de\ sesión\ concepto/workshopRobot.test.ts
+
+      - name: Detox test - Resto de pruebas
+        run: pnpm detox test --configuration ios.release --reuse --headless --record-logs all --exclude e2e/tests/Flujo\ de\ inicio\ de\ sesión\ concepto/workshopRobot.test.ts
