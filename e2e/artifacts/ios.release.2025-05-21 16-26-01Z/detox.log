@@ -1,0 +1,130 @@
+10:26:01.109 detox[17949] [90mB[39m node_modules/detox/local-cli/cli.js test --configuration ios.release --headless --record-logs all --specs e2e/tests/Flujo de inicio de sesión concepto/workshopRobot.test.ts
+  data: {
+    "id": "649969b7-9350-97ca-9c6f-dba3f6a4d04b",
+    "detoxConfig": {
+      "configurationName": "ios.release",
+      "apps": {
+        "default": {
+          "type": "ios.app",
+          "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/detoxdemogithubactions.app",
+          "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
+        }
+      },
+      "artifacts": {
+        "rootDir": "e2e/artifacts/ios.release.2025-05-21 16-26-01Z",
+        "plugins": {
+          "log": {
+            "enabled": true,
+            "keepOnlyFailedTestsArtifacts": false
+          },
+          "screenshot": {
+            "shouldTakeAutomaticSnapshots": true,
+            "keepOnlyFailedTestsArtifacts": false,
+            "takeWhen": {
+              "testStart": true,
+              "testDone": true
+            },
+            "enabled": true
+          },
+          "video": {
+            "enabled": false,
+            "keepOnlyFailedTestsArtifacts": false
+          },
+          "instruments": {
+            "enabled": false,
+            "keepOnlyFailedTestsArtifacts": false
+          },
+          "uiHierarchy": {
+            "enabled": false,
+            "keepOnlyFailedTestsArtifacts": false
+          }
+        }
+      },
+      "behavior": {
+        "init": {
+          "keepLockFile": false,
+          "reinstallApp": true,
+          "exposeGlobals": true
+        },
+        "cleanup": {
+          "shutdownDevice": false
+        },
+        "launchApp": "auto"
+      },
+      "cli": {
+        "recordLogs": "all",
+        "configuration": "ios.release",
+        "headless": true,
+        "start": true
+      },
+      "commands": [
+        {
+          "appName": "default",
+          "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
+        }
+      ],
+      "device": {
+        "type": "ios.simulator",
+        "device": {
+          "name": "iPhone 16",
+          "type": "iPhone 16",
+          "os": "iOS 18.2"
+        },
+        "headless": true
+      },
+      "logger": {
+        "level": "info",
+        "overrideConsole": true,
+        "options": {
+          "showLoggerName": true,
+          "showPid": true,
+          "showLevel": false,
+          "showMetadata": false,
+          "basepath": "/Users/mcamacho/Projects/detox-demo-github-actions/node_modules/.pnpm/detox@20.38.0_@jest+environment@29.7.0_@jest+types@29.6.3_expect@29.7.0_jest-environmen_7d81f4e58d2c7dc9c4cfa39f1bf73e86/node_modules/detox/src",
+          "prefixers": {},
+          "stringifiers": {}
+        }
+      },
+      "testRunner": {
+        "retries": 0,
+        "forwardEnv": false,
+        "detached": false,
+        "bail": false,
+        "noRetryArgs": [
+          "shard"
+        ],
+        "jest": {
+          "setupTimeout": 300000,
+          "teardownTimeout": 30000,
+          "retryAfterCircusRetries": false,
+          "reportWorkerAssign": true
+        },
+        "args": {
+          "$0": "jest",
+          "_": [],
+          "config": "e2e/jest.config.js",
+          "specs": "e2e/tests/Flujo de inicio de sesión concepto/workshopRobot.test.ts",
+          "--": []
+        }
+      },
+      "session": {
+        "autoStart": true,
+        "debugSynchronization": 10000
+      }
+    },
+    "detoxIPCServer": "primary-17949",
+    "testResults": [],
+    "testSessionIndex": 0,
+    "workersCount": 0
+  }
+10:26:01.112 detox[17949] [90mi[39m Server path not specified, so defaulting to ipc.config.socketRoot + ipc.config.appspace + ipc.config.id /tmp/detox.primary-17949
+10:26:01.112 detox[17949] [90mi[39m starting server on  /tmp/detox.primary-17949 
+10:26:01.112 detox[17949] [90mi[39m starting TLS server false
+10:26:01.112 detox[17949] [90mi[39m starting server as Unix || Windows Socket
+10:26:01.113 detox[17949] [90mi[39m Detox server listening on localhost:64216...
+10:26:01.114 detox[17949] [90mi[39m Serialized the session state at: /private/var/folders/h5/jn5kr8896s13l3xwh4hzcrch0000gn/T/649969b7-9350-97ca-9c6f-dba3f6a4d04b.detox.json
+10:26:01.115 detox[17949] [90mB[39m jest --config e2e/jest.config.js --specs e2e/tests/Flujo\ de\ inicio\ de\ sesión\ concepto/workshopRobot.test.ts
+10:26:01.194 detox[17949] [90mE[39m Command failed with exit code = 1:
+jest --config e2e/jest.config.js --specs e2e/tests/Flujo\ de\ inicio\ de\ sesión\ concepto/workshopRobot.test.ts
+10:26:01.195 detox[17949] [90mi[39m Detox server has been closed gracefully
+10:26:01.195 detox[17949] [90mE[39m node_modules/detox/local-cli/cli.js test --configuration ios.release --headless --record-logs all --specs e2e/tests/Flujo de inicio de sesión concepto/workshopRobot.test.ts

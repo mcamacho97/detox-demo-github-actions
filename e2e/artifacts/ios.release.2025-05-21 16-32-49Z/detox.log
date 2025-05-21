@@ -1,0 +1,131 @@
+10:32:49.588 detox[29685] [90mB[39m node_modules/detox/local-cli/cli.js test --configuration ios.release --reuse --headless --record-logs all --testNamePattern=^((?!Flujo\ de\ inicio\ de\ sesión).)*$
+  data: {
+    "id": "b60cc917-a5fe-f0a5-2e6e-174d9924af4d",
+    "detoxConfig": {
+      "configurationName": "ios.release",
+      "apps": {
+        "default": {
+          "type": "ios.app",
+          "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/detoxdemogithubactions.app",
+          "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
+        }
+      },
+      "artifacts": {
+        "rootDir": "e2e/artifacts/ios.release.2025-05-21 16-32-49Z",
+        "plugins": {
+          "log": {
+            "enabled": true,
+            "keepOnlyFailedTestsArtifacts": false
+          },
+          "screenshot": {
+            "shouldTakeAutomaticSnapshots": true,
+            "keepOnlyFailedTestsArtifacts": false,
+            "takeWhen": {
+              "testStart": true,
+              "testDone": true
+            },
+            "enabled": true
+          },
+          "video": {
+            "enabled": false,
+            "keepOnlyFailedTestsArtifacts": false
+          },
+          "instruments": {
+            "enabled": false,
+            "keepOnlyFailedTestsArtifacts": false
+          },
+          "uiHierarchy": {
+            "enabled": false,
+            "keepOnlyFailedTestsArtifacts": false
+          }
+        }
+      },
+      "behavior": {
+        "init": {
+          "keepLockFile": false,
+          "reinstallApp": false,
+          "exposeGlobals": true
+        },
+        "cleanup": {
+          "shutdownDevice": false
+        },
+        "launchApp": "auto"
+      },
+      "cli": {
+        "recordLogs": "all",
+        "configuration": "ios.release",
+        "headless": true,
+        "reuse": true,
+        "start": true
+      },
+      "commands": [
+        {
+          "appName": "default",
+          "build": "xcodebuild -workspace ios/detoxdemogithubactions.xcworkspace -scheme detoxdemogithubactions -sdk iphonesimulator -configuration Release -derivedDataPath ios/build"
+        }
+      ],
+      "device": {
+        "type": "ios.simulator",
+        "device": {
+          "name": "iPhone 16",
+          "type": "iPhone 16",
+          "os": "iOS 18.2"
+        },
+        "headless": true
+      },
+      "logger": {
+        "level": "info",
+        "overrideConsole": true,
+        "options": {
+          "showLoggerName": true,
+          "showPid": true,
+          "showLevel": false,
+          "showMetadata": false,
+          "basepath": "/Users/mcamacho/Projects/detox-demo-github-actions/node_modules/.pnpm/detox@20.38.0_@jest+environment@29.7.0_@jest+types@29.6.3_expect@29.7.0_jest-environmen_7d81f4e58d2c7dc9c4cfa39f1bf73e86/node_modules/detox/src",
+          "prefixers": {},
+          "stringifiers": {}
+        }
+      },
+      "testRunner": {
+        "retries": 0,
+        "forwardEnv": false,
+        "detached": false,
+        "bail": false,
+        "noRetryArgs": [
+          "shard"
+        ],
+        "jest": {
+          "setupTimeout": 300000,
+          "teardownTimeout": 30000,
+          "retryAfterCircusRetries": false,
+          "reportWorkerAssign": true
+        },
+        "args": {
+          "$0": "jest",
+          "_": [],
+          "config": "e2e/jest.config.js",
+          "testNamePattern": "^((?!Flujo\\ de\\ inicio\\ de\\ sesión).)*$",
+          "--": []
+        }
+      },
+      "session": {
+        "autoStart": true,
+        "debugSynchronization": 10000
+      }
+    },
+    "detoxIPCServer": "primary-29685",
+    "testResults": [],
+    "testSessionIndex": 0,
+    "workersCount": 0
+  }
+10:32:49.591 detox[29685] [90mi[39m Server path not specified, so defaulting to ipc.config.socketRoot + ipc.config.appspace + ipc.config.id /tmp/detox.primary-29685
+10:32:49.592 detox[29685] [90mi[39m starting server on  /tmp/detox.primary-29685 
+10:32:49.592 detox[29685] [90mi[39m starting TLS server false
+10:32:49.592 detox[29685] [90mi[39m starting server as Unix || Windows Socket
+10:32:49.593 detox[29685] [90mi[39m Detox server listening on localhost:49762...
+10:32:49.595 detox[29685] [90mi[39m Serialized the session state at: /private/var/folders/h5/jn5kr8896s13l3xwh4hzcrch0000gn/T/b60cc917-a5fe-f0a5-2e6e-174d9924af4d.detox.json
+10:32:49.596 detox[29685] [90mB[39m jest --config e2e/jest.config.js --testNamePattern ^((?!Flujo\\ de\\ inicio\\ de\\ sesión).)*$
+10:32:49.600 detox[29685] [90mE[39m Command failed with exit code = 2:
+jest --config e2e/jest.config.js --testNamePattern ^((?!Flujo\\ de\\ inicio\\ de\\ sesión).)*$
+10:32:49.600 detox[29685] [90mi[39m Detox server has been closed gracefully
+10:32:49.601 detox[29685] [90mE[39m node_modules/detox/local-cli/cli.js test --configuration ios.release --reuse --headless --record-logs all --testNamePattern=^((?!Flujo\ de\ inicio\ de\ sesión).)*$
