@@ -42,3 +42,17 @@ jobs:
 
       - name: Check version cocoapods
         run: pod --version
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Check version ruby
+        run: ruby --version
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
+          cd -
