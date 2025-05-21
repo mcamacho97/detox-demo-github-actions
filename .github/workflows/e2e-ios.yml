@@ -52,6 +52,15 @@ jobs:
           pod install
           cd -
 
+      - name: Cache Detox build
+        id: cache-detox-build
+        uses: actions/cache@v3
+        with:
+          path: ios/build
+          key: ${{ runner.os }}-detox-build
+          restore-keys: |
+            ${{ runner.os }}-detox-build 
+
       - name: Detox build
         run: pnpm detox build --configuration ios.release
         env:
