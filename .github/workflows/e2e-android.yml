@@ -37,12 +37,12 @@ jobs:
         run: pnpm detox build --configuration android.release
         env:
           RCT_NO_LAUNCH_PACKAGER: true
-          
+
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: x86_64
+          arch: arm64-v8a
           avd-name: Pixel_API_31
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
 
@@ -50,7 +50,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: x86_64
+          arch: arm64-v8a
           avd-name: Pixel_API_31
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
 
