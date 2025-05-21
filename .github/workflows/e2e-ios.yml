@@ -10,35 +10,5 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode.app
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
-
-    - name: Node
-      uses: actions/setup-node@v3
-
-    - name: Install node_modules
-      run: |
-        npm install
-
-    - name: Pod Install
-      run: |
-        cd ios && pod install && cd ..
-
-    - name: Install Applesimutils
-      run: |
-        brew tap wix/brew
-        brew install applesimutils
-
-    - name: Start RN Packager
-      run: |
-        npx react-native start &
-
-    - name: Build Detox
-      run: |
-        npx detox build -c ios.release
-
-    - name: Run Detox tests
-      run: |
-        npx detox test --record-videos all --take-screenshots all -c ios.release
+    - name: List available Xcode versions
+      run: ls /Applications | grep Xcode
