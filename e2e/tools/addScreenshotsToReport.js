@@ -96,7 +96,8 @@ $('.test-result').each((_, el) => {
 
 // Create new report with screenshots while preserving the original
 const formattedDate = getFormattedDate();
-const newReportPath = path.join(path.dirname(reportPath), `report-with-screenshots-${formattedDate}.html`);
+// const newReportPath = path.join(path.dirname(reportPath), `report-with-screenshots-${formattedDate}.html`);
+const newReportPath = path.join(path.dirname(reportPath), `report.html`);
 
 // Save the new report
 fs.writeFileSync(newReportPath, $.html());

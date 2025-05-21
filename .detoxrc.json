@@ -70,11 +70,11 @@
             "app": "ios.release"
         },
         "android.debug": {
-            "device": "android",
+            "device": "emulator",
             "app": "android.debug"
         },
         "android.release": {
-            "device": "android",
+            "device": "emulator",
             "app": "android.release"
         }
     }
