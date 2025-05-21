@@ -18,15 +18,15 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm@10.11.0
 
-      - name: Install pnpm dependencies
+      - name: Install dependencies
         run: pnpm install
 
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          cache: gradle
           distribution: temurin
           java-version: 17
+          cache: gradle
 
       - name: Detox clean cache
         run: pnpm detox clean-framework-cache && pnpm detox build-framework-cache
@@ -42,22 +42,26 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: arm64-v8a
+          arch: x86_64 # 👈 Esto corrige el problema con HVF
           avd-name: Pixel_API_31
-          script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+          script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
+          disable-animations: true
+          target: google_apis
 
       - name: Detox test - Resto de pruebas
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: arm64-v8a
+          arch: x86_64
           avd-name: Pixel_API_31
-          script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
+          script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns="e2e/tests/Flujo de inicio de sesión" --reuse
+          disable-animations: true
+          target: google_apis
 
       # - name: Generar reporte HTML final
       #   run: |
       #     cd e2e/tools/
-      #     npm install
+      #     pnpm install
       #     node addScreenshotsToReport.js
 
       # - name: Enviar reporte por correo
@@ -67,7 +71,7 @@ jobs:
       #     server_port: ${{ secrets.SMTP_PORT }}
       #     username: ${{ secrets.EMAIL_USERNAME }}
       #     password: ${{ secrets.EMAIL_PASSWORD }}
-      #     subject: "📱 Reporte Detox iOS E2E"
+      #     subject: "📱 Reporte Detox Android E2E"
       #     to: ${{ secrets.EMAIL_TO }}
       #     from: ${{ secrets.EMAIL_USERNAME }}
       #     secure: true
