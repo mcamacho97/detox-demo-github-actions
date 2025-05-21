@@ -49,7 +49,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: x86_4
+          arch: x86_64
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
 
@@ -57,7 +57,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: x86_4
+          arch: x86_64
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
 
