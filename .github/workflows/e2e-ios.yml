@@ -2,7 +2,7 @@ name: e2e-ios
 on: push
 
 jobs:
-  build:
+  e2e-ios:
     runs-on: macos-latest
     timeout-minutes: 50
 
