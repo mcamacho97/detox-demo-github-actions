@@ -40,19 +40,19 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Check version cocoapods
-        run: pod --version
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
       - name: Check version ruby
         run: ruby --version
+
+      - name: Check version cocoapods
+        run: pod --version
 
       - name: Install CocoaPods
         run: |
           cd ios
           pod install
           cd -
+
+      - name: Detox build
+        run: pnpm detox build --configuration ios.release
+        env:
+          RCT_NO_LAUNCH_PACKAGER: true
