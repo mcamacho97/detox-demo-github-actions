@@ -42,23 +42,33 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: x86_64 # 👈 Esto corrige el problema con HVF
-          avd-name: Pixel_API_31
-          script: pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect
-          target: google_apis
-
-      - name: Detox test - Resto de pruebas
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
           arch: x86_64
           avd-name: Pixel_API_31
-          script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns="e2e/tests/Flujo de inicio de sesión" --reuse
+          script: |
+            adb kill-server
+            adb start-server
+            pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión" || (
+              adb emu kill || true
+              sleep 10
+              adb start-server
+              pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
+            )
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect 
+          emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           target: google_apis
+        env:
+          ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 120
+
+      # - name: Detox test - Resto de pruebas
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 31
+      #     arch: x86_64
+      #     avd-name: Pixel_API_31
+      #     script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns="e2e/tests/Flujo de inicio de sesión" --reuse
+      #     disable-animations: true
+      #     emulator-options: -no-window -gpu swiftshader_indirect 
+      #     target: google_apis
 
       # - name: Generar reporte HTML final
       #   run: |
