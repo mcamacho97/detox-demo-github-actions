@@ -13,7 +13,7 @@ jobs:
     env:
       AVD_NAME: test
       API_LEVEL: 33
-      ABI: x86_64
+      ABI: arm64-v8a
       TARGET: "google_apis"
 
     steps:
@@ -47,17 +47,16 @@ jobs:
             "system-images;android-${API_LEVEL};${TARGET};${ABI}"
 
           echo "🔧 Configurando entorno"
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
+          echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:\$PATH" >> $GITHUB_ENV
 
           echo "📱 Creando AVD: $AVD_NAME"
-          echo "no" | avdmanager create avd -n $AVD_NAME -k "system-images;android-${API_LEVEL};${TARGET};${ABI}" --force
+          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n $AVD_NAME -k "system-images;android-${API_LEVEL};${TARGET};${ABI}" --force
 
       - name: Launch Emulator
         run: |
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
           echo "🚀 Iniciando emulador $AVD_NAME"
           $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-snapshot -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
-
+          
           echo "⏳ Esperando que el emulador inicie..."
           adb wait-for-device
           boot_completed=""
