@@ -28,24 +28,13 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm@10.11.0
 
-      - name: Setup Java
+      - name: Use specific Java version for sdkmanager to work
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 17
+          java-version: '8'
+          distribution: 'zulu'
+          architecture: 'x64'
 
-      - name: Install JAXB Dependencies
-        run: |
-          mkdir -p libs
-          curl -L -o libs/jaxb-api.jar https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar
-          curl -L -o libs/jaxb-core.jar https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.3.0.1/jaxb-core-2.3.0.1.jar
-          curl -L -o libs/jaxb-impl.jar https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.3.0.1/jaxb-impl-2.3.0.1.jar
-
-      - name: Configure JAXB CLASSPATH
-        run: |
-          export CLASSPATH="libs/jaxb-api.jar:libs/jaxb-core.jar:libs/jaxb-impl.jar:$CLASSPATH"
-        shell: bash
-        
       - name: Download Android Emulator Image
         run: |
           echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86"
