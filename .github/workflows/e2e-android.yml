@@ -4,9 +4,8 @@ on: push
 jobs:
   e2e-android:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
     env:
-      API_LEVEL: 35
+      API_LEVEL: 33
       ARCH: x86_64
 
     steps:
@@ -65,6 +64,15 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
+      - name: Cache Detox build
+        id: cache-detox-build
+        uses: actions/cache@v4
+        with:
+          path: android/app/build
+          key: ${{ runner.os }}-detox-build
+          restore-keys: |
+            ${{ runner.os }}-detox-build
+
       - name: Detox build
         run: pnpm detox build --configuration android.release
         env:
@@ -86,7 +94,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           target: google_apis
           ram-size: 8192M
-          disk-size: 4024M
+          disk-size: 4024.M
           script: |
             pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"  
         env:
