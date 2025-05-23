@@ -59,11 +59,6 @@ jobs:
           force-avd-creation: false
           script: echo 'Generated AVD snapshot for caching.'
 
-      - name: Detox clean cache
-        run: pnpm detox clean-framework-cache && pnpm detox build-framework-cache
-        env:
-          RCT_NO_LAUNCH_PACKAGER: true
-
       - name: Cache Detox build
         id: cache-detox-build
         uses: actions/cache@v4
@@ -83,6 +78,36 @@ jobs:
         run: |
           AVD_NAME=$(node -p "require('./.detoxrc').devices.emulator.device.avdName")
           echo "AVD_NAME=$AVD_NAME" >> $GITHUB_OUTPUT
+
+      - name: Start Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          script: |
+            adb devices
+            adb wait-for-device
+            adb shell settings put global window_animation_scale 0
+            adb shell settings put global transition_animation_scale 0
+            adb shell settings put global animator_duration_scale 0
+
+      - name: Wait for Emulator to Boot
+        run: |
+          timeout=300
+          until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+            sleep 5
+            let timeout-=5
+            if [ $timeout -le 0 ]; then
+              echo "Emulator failed to boot in time"
+              exit 1
+            fi
+          done
+          adb shell input keyevent 82
+
+      - name: Check Connected Devices
+        run: adb devices
 
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
