@@ -41,6 +41,11 @@ jobs:
           curl -L -o libs/jaxb-core.jar https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.3.0.1/jaxb-core-2.3.0.1.jar
           curl -L -o libs/jaxb-impl.jar https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.3.0.1/jaxb-impl-2.3.0.1.jar
 
+      - name: Configure JAXB CLASSPATH
+        run: |
+          export CLASSPATH="libs/jaxb-api.jar:libs/jaxb-core.jar:libs/jaxb-impl.jar:$CLASSPATH"
+        shell: bash
+        
       - name: Download Android Emulator Image
         run: |
           echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86"
