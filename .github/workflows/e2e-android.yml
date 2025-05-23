@@ -5,10 +5,20 @@ jobs:
   e2e-android:
     runs-on: ubuntu-latest
     timeout-minutes: 50
+    env:
+      API_LEVEL: 33
+      ARCH: x86_64
+      DETOX_CONFIGURATION: android.emu.release
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -28,6 +38,29 @@ jobs:
           java-version: 17
           cache: gradle
 
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ env.API_LEVEL }}
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ env.API_LEVEL }}
+          arch: ${{ env.ARCH }}
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          force-avd-creation: false
+          script: echo 'Generated AVD snapshot for caching.'
+
       - name: Detox clean cache
         run: pnpm detox clean-framework-cache && pnpm detox build-framework-cache
         env:
@@ -38,6 +71,12 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
+      - name: Get device name
+        id: device
+        run: |
+          AVD_NAME=$(node -p "require('./.detoxrc').devices.emulator.device.avdName")
+          echo "AVD_NAME=$AVD_NAME" >> $GITHUB_OUTPUT
+
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -45,14 +84,8 @@ jobs:
           arch: x86_64
           avd-name: Pixel_API_31
           script: |
-            adb kill-server
-            adb start-server
-            pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión" || (
-              adb emu kill || true
-              sleep 10
-              adb start-server
-              pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
-            )
+            pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
+            
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           target: google_apis
