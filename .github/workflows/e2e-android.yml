@@ -86,7 +86,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           target: google_apis
           ram-size: 8192M
-          disk-size: 6114M
+          disk-size: 4024M
           script: |
             pnpm detox test --configuration android.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"  
         env:
