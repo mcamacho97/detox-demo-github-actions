@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
-      API_LEVEL: 33
+      API_LEVEL: 35
       ARCH: x86_64
 
     steps:
