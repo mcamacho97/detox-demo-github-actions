@@ -79,36 +79,6 @@ jobs:
           AVD_NAME=$(node -p "require('./.detoxrc').devices.emulator.device.avdName")
           echo "AVD_NAME=$AVD_NAME" >> $GITHUB_OUTPUT
 
-      - name: Start Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          target: google_apis
-          arch: x86_64
-          profile: pixel_5
-          script: |
-            adb devices
-            adb wait-for-device
-            adb shell settings put global window_animation_scale 0
-            adb shell settings put global transition_animation_scale 0
-            adb shell settings put global animator_duration_scale 0
-
-      - name: Wait for Emulator to Boot
-        run: |
-          timeout=300
-          until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
-            sleep 5
-            let timeout-=5
-            if [ $timeout -le 0 ]; then
-              echo "Emulator failed to boot in time"
-              exit 1
-            fi
-          done
-          adb shell input keyevent 82
-
-      - name: Check Connected Devices
-        run: adb devices
-
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -116,10 +86,23 @@ jobs:
           arch: ${{ env.ARCH }}
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           disable-animations: true
-          # emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           force-avd-creation: false
           script: |
-            pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"  
+            echo "Esperando que el emulador esté listo..."
+            timeout=300
+            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+              sleep 5
+              let timeout-=5
+              if [ $timeout -le 0 ]; then
+                echo "Emulador no inició a tiempo"
+                exit 1
+              fi
+            done
+            adb shell input keyevent 82
+            adb devices
+            pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
+
 
       # - name: Detox test - Resto de pruebas
       #   uses: reactivecircus/android-emulator-runner@v2
