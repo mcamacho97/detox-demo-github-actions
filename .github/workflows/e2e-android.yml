@@ -31,14 +31,13 @@ jobs:
       - name: Use specific Java version for sdkmanager to work
         uses: actions/setup-java@v3
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'temurin'
 
-      - name: Download Android Emulator Image
+      - name: 🚀 Iniciando emulador $AVD_NAME
         run: |
-          echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-35;google_apis;arm64"
-          echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "Android" -k 'system-images;android-35;google_apis;arm64'
-          $ANDROID_HOME/emulator/emulator -list-avds
+          echo "Iniciando emulador $AVD_NAME"
+          nohup $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-snapshot-save -no-boot-anim -no-window -gpu swiftshader_indirect > /dev/null 2>&1 &
 
       - name: Install dependencies
         run: pnpm install
@@ -48,15 +47,18 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: Android Emulator
-        timeout-minutes: 10
-        continue-on-error: true
+      - name: ⏳ Esperando que el emulador inicie...
         run: |
-          echo "Starting emulator"
-          nohup $ANDROID_HOME/emulator/emulator -avd emu -no-audio -no-snapshot -no-window &
-          $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
-          $ANDROID_HOME/platform-tools/adb devices
-          echo "Emulator started"
+          set +e
+          bootanim=""
+          export PATH=$PATH:$ANDROID_HOME/platform-tools
+          until [[ "$bootanim" == *"stopped"* ]]; do
+            bootanim=$(adb -e shell getprop init.svc.bootanim 2>&1)
+            echo "Esperando... (bootanim=$bootanim)"
+            sleep 5
+          done
+          echo "✅ Emulador listo"
+          adb devices
 
       - name: Detox test - Inicio de sesión
         run: pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
