@@ -37,36 +37,23 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Setup Android SDK + Create AVD
+      - name: 🚀 Iniciando emulador $AVD_NAME
         run: |
-          echo "🛠 Instalando system image y cmdline-tools"
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install \
-            "platform-tools" \
-            "emulator" \
-            "cmdline-tools;latest" \
-            "system-images;android-${API_LEVEL};${TARGET};${ABI}"
+          echo "Iniciando emulador $AVD_NAME"
+          nohup $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-snapshot-save -no-boot-anim -no-window -gpu swiftshader_indirect > /dev/null 2>&1 &
 
-          echo "🔧 Configurando entorno"
-          echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:\$PATH" >> $GITHUB_ENV
-
-          echo "📱 Creando AVD: $AVD_NAME"
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n $AVD_NAME -k "system-images;android-${API_LEVEL};${TARGET};${ABI}" --force
-
-      - name: Launch Emulator
+      - name: ⏳ Esperando que el emulador inicie...
         run: |
-          echo "🚀 Iniciando emulador $AVD_NAME"
-          $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-snapshot -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
-          
-          echo "⏳ Esperando que el emulador inicie..."
-          adb wait-for-device
-          boot_completed=""
-          until [[ "$boot_completed" == "1" ]]; do
+          set +e
+          bootanim=""
+          export PATH=$PATH:$ANDROID_HOME/platform-tools
+          until [[ "$bootanim" == *"stopped"* ]]; do
+            bootanim=$(adb -e shell getprop init.svc.bootanim 2>&1)
+            echo "Esperando... (bootanim=$bootanim)"
             sleep 5
-            boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
-            echo "🕒 boot_completed=$boot_completed"
           done
-
-          adb shell input keyevent 82
+          echo "✅ Emulador listo"
+          adb devices
 
       - name: Build Detox
         run: pnpm detox build --configuration android.emu.release
