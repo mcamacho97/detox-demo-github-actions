@@ -74,7 +74,7 @@ jobs:
             ${{ runner.os }}-detox-build
 
       - name: Detox build
-        run: pnpm detox build --configuration android.release
+        run: pnpm detox build --configuration android.emu.release
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
