@@ -2,29 +2,16 @@ name: e2e-android
 on: push
 
 jobs:
-  e2e-android:
-    runs-on: ubuntu-latest
-    env:
-      API_LEVEL: 33
-      ARCH: x86_64
-
+  detox-test:
+    runs-on: macos-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '22.15.0'
-
-      - name: Install pnpm
-        run: npm install -g pnpm@10.11.0
 
       - name: Install dependencies
         run: pnpm install
@@ -34,106 +21,18 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
 
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: AVD cache
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-${{ env.API_LEVEL }}
-
-      - name: Create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ env.API_LEVEL }}
-          arch: ${{ env.ARCH }}
-          disable-animations: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          force-avd-creation: false
-          script: echo 'Generated AVD snapshot for caching.'
-
-      - name: Cache Detox build
-        id: cache-detox-build
-        uses: actions/cache@v4
-        with:
-          path: android/app/build
-          key: ${{ runner.os }}-detox-build
-          restore-keys: |
-            ${{ runner.os }}-detox-build
-
-      - name: Detox build
-        run: pnpm detox build --configuration android.emu.release
-        env:
-          RCT_NO_LAUNCH_PACKAGER: true
-
-      - name: Get device name
-        id: device
+      - name: Start AVD
         run: |
-          AVD_NAME=$(node -p "require('./.detoxrc').devices.emulator.device.avdName")
-          echo "AVD_NAME=$AVD_NAME" >> $GITHUB_OUTPUT
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
+          echo no | avdmanager create avd -n test -k "system-images;android-33;google_apis;x86_64" --force
+          $ANDROID_HOME/emulator/emulator -avd test -no-snapshot -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+          adb wait-for-device
+          adb shell input keyevent 82
+          sleep 30
 
-      - name: Detox test - Inicio de sesión
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ env.API_LEVEL }}
-          arch: ${{ env.ARCH }}
-          avd-name: ${{ steps.device.outputs.AVD_NAME }}
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          force-avd-creation: false
-          script: |
-            echo "Esperando que el emulador esté listo..."
-            timeout=300
-            until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
-              sleep 5
-              let timeout-=5
-              if [ $timeout -le 0 ]; then
-                echo "Emulador no inició a tiempo"
-                exit 1
-              fi
-            done
-            adb shell input keyevent 82
-            adb devices
-            pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern="e2e/tests/Flujo de inicio de sesión"
+      - name: Build Detox
+        run: pnpm detox build --configuration android.emu.release
 
-
-      # - name: Detox test - Resto de pruebas
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 31
-      #     arch: x86_64
-      #     avd-name: Pixel_API_31
-      #     script: pnpm detox test --configuration android.release --headless --record-logs all --testPathIgnorePatterns="e2e/tests/Flujo de inicio de sesión" --reuse
-      #     disable-animations: true
-      #     emulator-options: -no-window -gpu swiftshader_indirect 
-      #     target: google_apis
-
-      # - name: Generar reporte HTML final
-      #   run: |
-      #     cd e2e/tools/
-      #     pnpm install
-      #     node addScreenshotsToReport.js
-
-      # - name: Enviar reporte por correo
-      #   uses: dawidd6/action-send-mail@v3
-      #   with:
-      #     server_address: ${{ secrets.SMTP_SERVER }}
-      #     server_port: ${{ secrets.SMTP_PORT }}
-      #     username: ${{ secrets.EMAIL_USERNAME }}
-      #     password: ${{ secrets.EMAIL_PASSWORD }}
-      #     subject: "📱 Reporte Detox Android E2E"
-      #     to: ${{ secrets.EMAIL_TO }}
-      #     from: ${{ secrets.EMAIL_USERNAME }}
-      #     secure: true
-      #     body: |
-      #       Hola, se adjuntan los resultados de las pruebas automatizadas
-      #       Saludos,
-      #       GitHub Actions
-      #     attachments: e2e/reports/report.html
+      - name: Run Detox Tests
+        run: pnpm detox test --configuration android.emu.release --headless
