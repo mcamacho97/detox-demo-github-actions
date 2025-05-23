@@ -1,14 +1,26 @@
-name: e2e-android
-on: push
+name: E2E Android Detox
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  detox-test:
+  detox-e2e-android:
     runs-on: macos-latest
+
+    env:
+      AVD_NAME: test
+      API_LEVEL: 33
+      ABI: x86_64
+      TARGET: "google_apis"
+
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.15.0'
@@ -25,29 +37,45 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Android Command-Line Tools
+      - name: Setup Android SDK + Create AVD
         run: |
-          echo "Installing Android SDK Command-Line Tools"
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-mac-8512546_latest.zip
-          unzip commandlinetools.zip -d $ANDROID_HOME/cmdline-tools
-          mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          echo "🛠 Instalando system image y cmdline-tools"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install \
+            "platform-tools" \
+            "emulator" \
+            "cmdline-tools;latest" \
+            "system-images;android-${API_LEVEL};${TARGET};${ABI}"
 
-      - name: Set ANDROID_HOME Environment Variable
-        run: echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "🔧 Configurando entorno"
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
 
-      - name: Start AVD
+          echo "📱 Creando AVD: $AVD_NAME"
+          echo "no" | avdmanager create avd -n $AVD_NAME -k "system-images;android-${API_LEVEL};${TARGET};${ABI}" --force
+
+      - name: Launch Emulator
         run: |
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
-          echo no | avdmanager create avd -n test -k "system-images;android-33;google_apis;x86_64" --force
-          $ANDROID_HOME/emulator/emulator -avd test -no-snapshot -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
+          echo "🚀 Iniciando emulador $AVD_NAME"
+          $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-snapshot -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+
+          echo "⏳ Esperando que el emulador inicie..."
           adb wait-for-device
+          boot_completed=""
+          until [[ "$boot_completed" == "1" ]]; do
+            sleep 5
+            boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
+            echo "🕒 boot_completed=$boot_completed"
+          done
+
           adb shell input keyevent 82
-          sleep 30
 
       - name: Build Detox
         run: pnpm detox build --configuration android.emu.release
+        env:
+          RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: Run Detox Tests
-        run: pnpm detox test --configuration android.emu.release --headless
+      - name: Detox test - Inicio de sesión
+        run: pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+
+      - name: Detox test - Resto de pruebas
+        run: pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
