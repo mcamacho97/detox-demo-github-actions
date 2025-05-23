@@ -28,32 +28,20 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm@10.11.0
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
-      - name: 🚀 Iniciando emulador $AVD_NAME
+      - name: Download Android Emulator Image
         run: |
-          echo "Iniciando emulador $AVD_NAME"
-          nohup $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-snapshot-save -no-boot-anim -no-window -gpu swiftshader_indirect > /dev/null 2>&1 &
+          echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86"
+          echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force -n TestEmulator -d pixel --package 'system-images;android-29;google_apis;x86'
+          $ANDROID_HOME/emulator/emulator -list-avds
 
-      - name: ⏳ Esperando que el emulador inicie...
-        run: |
-          set +e
-          bootanim=""
-          export PATH=$PATH:$ANDROID_HOME/platform-tools
-          until [[ "$bootanim" == *"stopped"* ]]; do
-            bootanim=$(adb -e shell getprop init.svc.bootanim 2>&1)
-            echo "Esperando... (bootanim=$bootanim)"
-            sleep 5
-          done
-          echo "✅ Emulador listo"
-          adb devices
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Build Detox
         run: pnpm detox build --configuration android.emu.release
