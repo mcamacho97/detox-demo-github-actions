@@ -50,10 +50,12 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: list items
+      - name: Build Android app and test APK
         run: |
-          cd /home/runner/work/detox-demo-github-actions/detox-demo-github-actions/android/app/build/outputs/apk/androidTest/release
-          ls
+          cd android
+          ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release
+          cd ..
+          ls -la android/app/build/outputs/apk/
 
       # - name: Detox test - Inicio de sesión
       #   uses: reactivecircus/android-emulator-runner@v2
