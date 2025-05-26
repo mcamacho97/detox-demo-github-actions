@@ -9,7 +9,7 @@ on:
 jobs:
   detox-e2e-android:
     # Usar un runner con más recursos (large)
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest-8-cores
 
     steps:
       - name: Checkout repo
