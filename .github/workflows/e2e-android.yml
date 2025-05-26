@@ -8,7 +8,7 @@ on:
 
 jobs:
   detox-e2e-android:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
@@ -22,14 +22,14 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm@10.11.0
 
-      - name: Use specific Java version for sdkmanager to work
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
       - name: Install dependencies
         run: pnpm install
+
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglu1-mesa
+          sudo apt-get install -y xvfb
 
       - name: Build Detox
         run: pnpm detox build --configuration android.emu.release
@@ -40,16 +40,20 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
-          arch: arm64-v8a
+          arch: x86_64
           avd-name: Pixel_3a_API_33
           target: google_apis
-          script: pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: xvfb-run --server-args="-screen 0 1920x1080x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
 
       - name: Detox test - Resto de pruebas
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
-          arch: arm64-v8a
+          arch: x86_64
           avd-name: Pixel_3a_API_33
           target: google_apis
-          script: pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: xvfb-run --server-args="-screen 0 1920x1080x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
