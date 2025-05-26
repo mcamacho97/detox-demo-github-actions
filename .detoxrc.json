@@ -61,7 +61,7 @@
         "emulator": {
             "type": "android.emulator",
             "device": {
-                "avdName": "Pixel_3a_API_33"
+                "avdName": "test-emulator"
             }
         }
     },
