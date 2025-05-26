@@ -50,24 +50,30 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: Build Android app and test APK
+      - name: Install required packages
         run: |
-          cd android
-          ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release
-          cd ..
-          ls -la android/app/build/outputs/apk/
+          sudo apt-get update
+          sudo apt-get install -y libglu1-mesa
+          sudo apt-get install -y xvfb
+          sudo apt-get install -y libvulkan1 mesa-vulkan-drivers vulkan-utils libx11-6
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
 
-      # - name: Detox test - Inicio de sesión
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 29  # Usar una API más ligera
-      #     arch: x86_64
-      #     avd-name: test-emulator
-      #     target: default
-      #     emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
-      #     disk-size: 4096M  # Especificar un tamaño de disco menor
-      #     disable-animations: true
-      #     script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+      - name: Detox test - Inicio de sesión
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29  # Usar una API más ligera
+          arch: x86_64
+          avd-name: test-emulator
+          target: default
+          emulator-options: -no-snapshot -no-window -gpu off -noaudio -no-boot-anim -memory 2048
+          disk-size: 4096M  # Especificar un tamaño de disco menor
+          disable-animations: true
+          script: |
+            adb wait-for-device 
+            sleep 30 
+            xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
 
       # - name: Detox test - Resto de pruebas
       #   uses: reactivecircus/android-emulator-runner@v2
