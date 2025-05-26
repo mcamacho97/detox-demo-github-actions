@@ -50,26 +50,32 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: Detox test - Inicio de sesión
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29  # Usar una API más ligera
-          arch: x86_64
-          avd-name: test-emulator
-          target: default
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
-          disk-size: 4096M  # Especificar un tamaño de disco menor
-          disable-animations: true
-          script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+      - name: list items
+        run: pnpm detox build --configuration android.emu.release
+        run: |
+          cd /home/runner/work/detox-demo-github-actions/detox-demo-github-actions/android/app/build/outputs/apk/androidTest/release
+          ls
 
-      - name: Detox test - Resto de pruebas
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29  # Usar una API más ligera
-          arch: x86_64
-          avd-name: test-emulator
-          target: default
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
-          disk-size: 4096M  # Especificar un tamaño de disco menor
-          disable-animations: true
-          script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
+      # - name: Detox test - Inicio de sesión
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 29  # Usar una API más ligera
+      #     arch: x86_64
+      #     avd-name: test-emulator
+      #     target: default
+      #     emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
+      #     disk-size: 4096M  # Especificar un tamaño de disco menor
+      #     disable-animations: true
+      #     script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+
+      # - name: Detox test - Resto de pruebas
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 29  # Usar una API más ligera
+      #     arch: x86_64
+      #     avd-name: test-emulator
+      #     target: default
+      #     emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
+      #     disk-size: 4096M  # Especificar un tamaño de disco menor
+      #     disable-animations: true
+      #     script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
