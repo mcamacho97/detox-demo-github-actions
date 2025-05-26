@@ -51,7 +51,6 @@ jobs:
           RCT_NO_LAUNCH_PACKAGER: true
 
       - name: list items
-        run: pnpm detox build --configuration android.emu.release
         run: |
           cd /home/runner/work/detox-demo-github-actions/detox-demo-github-actions/android/app/build/outputs/apk/androidTest/release
           ls
