@@ -8,7 +8,8 @@ on:
 
 jobs:
   detox-e2e-android:
-    runs-on: ubuntu-latest
+    # Usar un runner con más recursos (large)
+    runs-on: ubuntu-latest-16-cores
 
     steps:
       - name: Checkout repo
@@ -30,6 +31,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libglu1-mesa
           sudo apt-get install -y xvfb
+          # Liberar espacio en disco
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+
+      - name: Free up disk space
+        run: |
+          df -h
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker rmi $(docker image ls -aq) || true
+          df -h
 
       - name: Build Detox
         run: pnpm detox build --configuration android.emu.release
@@ -39,21 +53,23 @@ jobs:
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          api-level: 29  # Usar una API más ligera
           arch: x86_64
-          avd-name: Pixel_3a_API_33
-          target: google_apis
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          avd-name: test-emulator
+          target: default
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
+          disk-size: 4096M  # Especificar un tamaño de disco menor
           disable-animations: true
-          script: xvfb-run --server-args="-screen 0 1920x1080x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
+          script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathPattern=e2e/tests/Flujo\ de\ inicio\ de\ sesión
 
       - name: Detox test - Resto de pruebas
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          api-level: 29  # Usar una API más ligera
           arch: x86_64
-          avd-name: Pixel_3a_API_33
-          target: google_apis
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          avd-name: test-emulator
+          target: default
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
+          disk-size: 4096M  # Especificar un tamaño de disco menor
           disable-animations: true
-          script: xvfb-run --server-args="-screen 0 1920x1080x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
+          script: xvfb-run --server-args="-screen 0 1280x800x24" pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
