@@ -51,9 +51,6 @@ jobs:
         env:
           RCT_NO_LAUNCH_PACKAGER: true
 
-      - name: List APKs
-        run: find android/app/build/outputs/apk -type f
-
       - name: Detox test - Inicio de sesión
         uses: reactivecircus/android-emulator-runner@v2
         with:
