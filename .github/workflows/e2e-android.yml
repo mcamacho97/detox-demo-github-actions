@@ -75,6 +75,5 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048
           disk-size: 4096M  # Especificar un tamaño de disco menor
           heap-size: 2048M
-          disk-size: 6000M
           disable-animations: true
           script: pnpm detox test --configuration android.emu.release --headless --record-logs all --testPathIgnorePatterns=e2e/tests/Flujo\ de\ inicio\ de\ sesión --reuse
