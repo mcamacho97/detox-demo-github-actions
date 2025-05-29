@@ -8,9 +8,7 @@ on:
 
 jobs:
   detox-e2e-android:
-    runs-on:
-      group: ubuntu-runners
-      labels: ubuntu-latest-16core
+    runs-on: ubuntu-latest
     timeout-minutes: 50
 
 

@@ -37,7 +37,7 @@
         "android.release": {
             "type": "android.apk",
             "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=release",
-            "binaryPath": "android/app/build/outputs/apk/release/app-release.apk"
+            "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk"
         }
     },
     "devices": {
